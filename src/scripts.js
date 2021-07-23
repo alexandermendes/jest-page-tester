@@ -106,11 +106,12 @@ const runAsyncScripts = (jsdom, scriptEls) => {
 /**
  * Load scripts.
  *
- * It may be possible to make jsdom do all this with `runScripts: dangerously`,
- * but I had some problems getting that to run scripts injected by other.
- * Instead this fetches the source for inline or external scripts and runs that
- * source in the current VM context, with some additional functionality for
- * blocking certain scripts etc.
+ * It may be possible to make jsdom do all this with `runScripts: dangerously`
+ * and a custom ResourceLoader but I had some problems getting all that to
+ * work. Potential refactor oppertunity at some point.
+ *
+ * Instead we fetch the external scripts and runs those in the current VM context,
+ * with some additional functionality for blocking certain scripts etc.
  */
 export const loadScripts = async (jsdom) => {
   const scriptsBeforeLoad = getNewScripts(jsdom);
