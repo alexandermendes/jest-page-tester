@@ -10,6 +10,14 @@ const CURRENT_URL_ATTRIBUTE = 'data-jest-page-tester-url';
  */
 const getFullUrl = (url) => {
   const { testURL } = getConfig();
+  const absoluteUrlPattern = /^(?:[a-z]+:)?\/\//;
+
+  if (!testURL && !absoluteUrlPattern.test(url)) {
+    throw new Error(
+      'A `testURL` must be set as a config option or CLI arg if using relative URLs.'
+    );
+  }
+
   let href;
 
   try {
@@ -50,15 +58,10 @@ export const getCurrentUrl = () => global.document.body.getAttribute(CURRENT_URL
 export default class Page {
   constructor(jsdom) {
     this.jsdom = jsdom;
-    this.currentUrl = null;
-    this.status = null;
   }
 
   async loadPage(url, options) {
     const fullUrl = getFullUrl(url);
-
-    this.currentUrl = fullUrl;
-
     const res = await purgedFetch(url, options);
     const text = await res.text();
 

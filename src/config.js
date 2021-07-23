@@ -2,6 +2,14 @@ import { cosmiconfigSync } from 'cosmiconfig';
 import assert from 'assert';
 import { argv } from 'yargs';
 
+const isValidUrl = (url) => {
+  try {
+    return !!new URL(url);
+  } catch (err) {
+    return false;
+  }
+};
+
 const assignCliArgs = (config) => {
   const cliArgs = ['testURL'];
 
@@ -16,8 +24,8 @@ const assignCliArgs = (config) => {
 
 const validate = (config) => {
   assert.ok(
-    config.testURL,
-    'A `testURL` is required',
+    !config.testURL || !isValidUrl(config.testURL),
+    `The \`testURL\` must be a valid URL, got ${config.testURL}`,
   );
 
   assert.ok(
