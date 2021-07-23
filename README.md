@@ -64,7 +64,7 @@ it('runs the external script', async () => {
 ## Configuration
 
 Jest page tester can be configured by adding a `jest-page-tester.config.js`
-file to the root of your repo, or by adding the `jest-page-tester` property
+file to the root of your repo, or by adding a `jest-page-tester` property
 to your `package.json` file.
 
 The available options are documented below.
@@ -82,7 +82,7 @@ module.exports = {
 
 ### `block`
 
-A list regular expressions matching URLs to block when loading external resources.
+A list regular expressions used to block the loading of external resources.
 
 ```js
 // jest-page-tester.config.js
