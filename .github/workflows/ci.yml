@@ -15,5 +15,3 @@ jobs:
         run: yarn lint
       - name: Unit Tests
         run: yarn test
-      - name: Integration Tests
-        run: yarn test:integration
