@@ -2,6 +2,9 @@ import { cosmiconfigSync } from 'cosmiconfig';
 import assert from 'assert';
 import { argv } from 'yargs';
 
+/**
+ * Check if a URL is valid.
+ */
 const isValidUrl = (url) => {
   try {
     return !!new URL(url);
@@ -10,6 +13,9 @@ const isValidUrl = (url) => {
   }
 };
 
+/**
+ * Assign any CLI args to the config object.
+ */
 const assignCliArgs = (config) => {
   const cliArgs = ['testURL'];
 
@@ -22,6 +28,9 @@ const assignCliArgs = (config) => {
   });
 };
 
+/**
+ * Validate the config.
+ */
 const validate = (config) => {
   assert.ok(
     !config.testURL || isValidUrl(config.testURL),
@@ -39,6 +48,9 @@ const validate = (config) => {
   );
 };
 
+/**
+ * Get the jest-page-tester config.
+ */
 export const getConfig = () => {
   const explorerSync = cosmiconfigSync('jest-page-tester');
   const config = explorerSync.search() || {};
