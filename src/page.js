@@ -32,11 +32,11 @@ const getFullUrl = (url) => {
  *
  * TODO: Make fastly purge an option.
  */
-const purgedFetch = async (url, options = {}) => {
+const purgedFetch = async (url) => {
   const fullUrl = getFullUrl(url);
   await fetch(fullUrl, { method: 'PURGE' });
 
-  return fetch(fullUrl, options);
+  return fetch(fullUrl);
 };
 
 /**
@@ -48,27 +48,20 @@ const copyAttributes = (sourceEl, targetEl) => {
   });
 };
 
-export default class Page {
-  constructor(jsdom) {
-    this.jsdom = jsdom;
-  }
+/**
+ * Load a page into jsdom.
+ */
+export const loadPage = async (jsdom, url) => {
+  const fullUrl = getFullUrl(url);
+  const res = await purgedFetch(url);
+  const text = await res.text();
 
-  async loadPage(url, options) {
-    const fullUrl = getFullUrl(url);
-    const res = await purgedFetch(url, options);
-    const text = await res.text();
+  const dom = new JSDOM(text, { url: fullUrl });
 
-    const dom = new JSDOM(text, { url: fullUrl });
+  jsdom.reconfigure({ url: fullUrl });
 
-    this.jsdom.reconfigure({ url: fullUrl });
+  jsdom.window.document.head.innerHTML = dom.window.document.head.innerHTML;
+  jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
 
-    this.jsdom.window.document.head.innerHTML = dom.window.document.head.innerHTML;
-    this.jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
-
-    copyAttributes(dom.window.document.body, this.jsdom.window.document.body);
-  }
-
-  async loadScripts() {
-    await loadScripts(this.jsdom);
-  }
+  copyAttributes(dom.window.document.body, jsdom.window.document.body);
 }

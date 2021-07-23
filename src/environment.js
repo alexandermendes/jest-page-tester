@@ -1,4 +1,4 @@
-import Page from './page';
+import { getPageContext } from './page-context';
 
 let JSDOMEnvironment;
 
@@ -13,7 +13,7 @@ export default class JestPageTesterEnvironment extends JSDOMEnvironment {
   constructor(config, options) {
     super(config, options);
 
-    this.global.page = new Page(this.dom);
+    this.global.page = getPageContext(this.dom);
   }
 
   teardown() {
