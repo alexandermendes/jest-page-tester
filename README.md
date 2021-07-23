@@ -21,7 +21,7 @@ yarn add jest-page-tester -D
 
 ## Setup
 
-Load the preset by adding it to your Jest config, as follows:
+Add the `jest-page-tester` preset to your Jest config, as follows:
 
 ```js
 // jest.config.js
@@ -32,18 +32,11 @@ module.exports = {
 
 ## Usage
 
-Once you have written some tests (see below) you can run them while passing the
-`testURL` argument:
-
-```
-jest --testURL=https://example.com
-```
-
-The following functions will be made available via the `page` global object.
+The following functions will be made available to your tests via the global `page` object.
 
 ### `page.loadPage()`
 
-Loads a page into the DOM.
+Load a page into the DOM.
 
 ```js
 it('renders the page title', async () => {
@@ -57,8 +50,7 @@ it('renders the page title', async () => {
 
 ### `page.loadScripts()`
 
-By default, external script resources will not be loaded. They can be loaded
-in a particular test by calling `loadScripts()`, for example:
+Load external scripts (which will not be loaded by default).
 
 ```js
 it('runs the external script', async () => {
@@ -92,6 +84,23 @@ The base URL against which to run the tests (will be overwritten by the `--testU
 
 A list regular expressions matching URLs to block when loading external resources.
 
+### `fetch`
+
+Override the default fetch function used for requesting resources. Useful if
+we want to purge an edge cache each time we load a page, for example.
+
+```js
+const fetch = require('node-fetch');
+
+module.exports = {
+  fetch: async (url, opts) => {
+    await fetch(url, { method: 'PURGE' });
+
+    return fetch(url, opts);
+  },
+};
+```
+
 ## ESLint
 
 Configure ESLint by adding the `page` global, as follows:
@@ -103,10 +112,3 @@ Configure ESLint by adding the `page` global, as follows:
   },
 }
 ```
-
----
-
-Ideas:
-
-- Debug mode that pauses the test and opens the page in a browser.
-- Prefetch hook

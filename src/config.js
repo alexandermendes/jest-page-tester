@@ -24,13 +24,18 @@ const assignCliArgs = (config) => {
 
 const validate = (config) => {
   assert.ok(
-    !config.testURL || !isValidUrl(config.testURL),
+    !config.testURL || isValidUrl(config.testURL),
     `The \`testURL\` must be a valid URL, got ${config.testURL}`,
   );
 
   assert.ok(
     !config.block || Array.isArray(config.block),
     'If the `block` option is given it must be an array.',
+  );
+
+  assert.ok(
+    !config.fetch || typeof config.fetch === 'function',
+    'If the `fetch` option is given it must be a function.',
   );
 };
 

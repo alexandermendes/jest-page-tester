@@ -1,5 +1,5 @@
-import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
+import fetch from './fetch';
 import { getConfig } from './config';
 
 /**
@@ -27,18 +27,6 @@ const getFullUrl = (url) => {
 };
 
 /**
- * Purge a URL from the edge cache then fetch.
- *
- * TODO: Make fastly purge an option.
- */
-const purgedFetch = async (url) => {
-  const fullUrl = getFullUrl(url);
-  await fetch(fullUrl, { method: 'PURGE' });
-
-  return fetch(fullUrl);
-};
-
-/**
  * Copy attributes from one DOM element to another.
  */
 const copyAttributes = (sourceEl, targetEl) => {
@@ -52,7 +40,7 @@ const copyAttributes = (sourceEl, targetEl) => {
  */
 export const loadPage = async (jsdom, url) => {
   const fullUrl = getFullUrl(url);
-  const res = await purgedFetch(url);
+  const res = await fetch(fullUrl);
   const text = await res.text();
 
   const dom = new JSDOM(text, { url: fullUrl });

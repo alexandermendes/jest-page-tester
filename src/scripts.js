@@ -1,7 +1,7 @@
-import fetch from 'node-fetch';
 import { argv } from 'yargs';
 import { Script } from 'vm';
 import PQueue from 'p-queue';
+import fetch from './fetch';
 import { logger } from './log';
 import { getConfig } from './config';
 
