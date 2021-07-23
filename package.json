@@ -1,0 +1,62 @@
+{
+  "name": "jest-page-tester",
+  "description": "Extends Jest with functionality for loading real pages into jsdom.",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "jest",
+    "build": "babel src --out-dir dist",
+    "prebuild": "rimraf dist",
+    "prepublishOnly": "yarn run build"
+  },
+  "main": "jest-preset.js",
+  "author": "Alex Mendes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexandermendes/jest-page-tester.git"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "peerDependencies": {
+    "jest": ">=24",
+    "jest-environment-jsdom": ">=24"
+  },
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "jest-circus": "^27.0.6",
+    "jest-matchmedia-mock": "^1.1.0",
+    "jsdom": "^16.6.0",
+    "node-fetch": "^2.6.1",
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.0",
+    "@babel/core": "^7.14.8",
+    "@babel/plugin-transform-runtime": "^7.10.0",
+    "@babel/preset-env": "^7.10.0",
+    "@babel/runtime": "^7.10.0",
+    "@commitlint/config-conventional": "^8.3.4",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^24.8.0",
+    "commitlint": "^8.3.5",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.13.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "husky": "^4.2.5",
+    "jest": "^26.0.1",
+    "rimraf": "^3.0.2"
+  }
+}

@@ -1,0 +1,20 @@
+# Logs
+*.log
+
+# Packages
+node_modules/
+.yalc
+yalc.lock
+*.tgz
+
+# Build
+dist/
+
+# Coverage
+coverage/
+
+# IDE
+.idea/
+
+# System
+.DS_Store
