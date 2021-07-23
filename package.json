@@ -5,8 +5,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "jest",
-    "test:integration": "jest integration -c jest.integration.config.js",
-    "pretest:integration": "yarn build",
+    "pretest": "yarn build",
     "build": "babel src --out-dir dist",
     "prebuild": "rimraf dist",
     "prepublishOnly": "yarn run build"

@@ -1,6 +1,6 @@
 module.exports = {
   clearMocks: true,
-  testEnvironment: 'node',
-  collectCoverageFrom: ['packages/{**/,}*.js'],
+  collectCoverageFrom: ['src/{**/,}*.js'],
+  preset: './jest-preset',
   transform: { '^.+\\.(js|jsx)?$': '<rootDir>/node_modules/babel-jest' },
 };
