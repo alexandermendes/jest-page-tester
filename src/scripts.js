@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
+import { argv } from 'yargs';
 import { Script } from 'vm';
+import { logger } from './log';
 
 const LOADED_ATTRIBUTE = 'data-jest-page-tester-loaded';
 
@@ -95,6 +97,14 @@ const loadScript = async (jsdom, scriptEl) => {
  */
 export const loadScripts = async (jsdom, scriptOpts) => {
   const scriptsBeforeLoad = getNewScripts(jsdom, scriptOpts);
+
+  if (argv.debug) {
+    scriptsBeforeLoad
+      .filter(({ src }) => src)
+      .forEach(({ src }) => {
+        logger.debug(`Loading external script: ${src || 'inline'}`);
+      });
+  }
 
   await Promise.all(scriptsBeforeLoad.map((scriptEl) => loadScript(jsdom, scriptEl)));
 

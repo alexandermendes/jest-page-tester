@@ -76,7 +76,11 @@ export default class Page {
   async loadScripts() {
     await loadScripts(this.jsdom, {
       block: [
-        'www.googletagmanager.com', // TODO: Make optional
+        // TODO: Make optional
+        'www.googletagmanager.com',
+        'www.datadoghq-browser-agent.com',
+        'cdn.speedcurve.com',
+        'use.typekit.net',
       ],
     });
   }
