@@ -99,7 +99,7 @@ Configure ESLint by adding the `page` global, as follows:
 ```json
 {
   "globals": {
-    "page": true,
+    "page": "readonly"
   },
 }
 ```

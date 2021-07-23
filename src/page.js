@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
-import { loadScripts } from './scripts';
 import { getConfig } from './config';
 
 /**
@@ -12,7 +11,7 @@ const getFullUrl = (url) => {
 
   if (!testURL && !absoluteUrlPattern.test(url)) {
     throw new Error(
-      'A `testURL` must be set as a config option or CLI arg if using relative URLs.'
+      'A `testURL` must be set as a config option or CLI arg if using relative URLs.',
     );
   }
 
@@ -64,4 +63,4 @@ export const loadPage = async (jsdom, url) => {
   jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
 
   copyAttributes(dom.window.document.body, jsdom.window.document.body);
-}
+};

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved,global-require */
 import { getPageContext } from './page-context';
 
 let JSDOMEnvironment;

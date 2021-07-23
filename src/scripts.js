@@ -16,26 +16,12 @@ const fetchScript = async (src) => {
   try {
     res = await fetch(src);
   } catch (err) {
-    process.stderr.write(`Error fetching ${src}, ${err.message}`);
+    logger.error(`Error fetching ${src}, ${err.message}`);
 
     return null;
   }
 
   return res.text();
-};
-
-/**
- * Get the source of a script.
- */
-const loadScriptSrc = async (scriptEl) => {
-  const { src } = scriptEl;
-  let code;
-
-  if (src) {
-    code = await fetchScript(src);
-  }
-
-  return code || scriptEl.innerHTML;
 };
 
 /**
@@ -80,7 +66,7 @@ const getNewScripts = (jsdom) => {
  * Run a script in the current VM context.
  */
 const loadScript = async (jsdom, scriptEl) => {
-  const code = await loadScriptSrc(scriptEl);
+  const code = await fetchScript(scriptEl.src);
   const script = new Script(code);
   const vmContext = jsdom.getInternalVMContext();
 
@@ -93,8 +79,6 @@ const loadScript = async (jsdom, scriptEl) => {
 
 /**
  * Check if a script element is asynchronous.
- *
- * TODO: test with async=""
  */
 const isScriptAsync = (scriptEl) => scriptEl.getAttribute('async') != null;
 
@@ -146,10 +130,8 @@ export const loadScripts = async (jsdom) => {
     el.setAttribute(LOADED_ATTRIBUTE, true);
   });
 
-  const scriptsAfterLoad = getNewScripts(jsdom);
-
   // If the loaded scripts injected more scripts run again to load those.
-  if (scriptsBeforeLoad.length > scriptsAfterLoad.length) {
+  if (getNewScripts(jsdom).length) {
     await loadScripts(jsdom);
   }
 };
