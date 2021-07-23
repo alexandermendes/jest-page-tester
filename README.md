@@ -7,7 +7,7 @@ Intended for cases where we want to run integration tests against real pages
 without dealing with all the implicit flakiness of running those tests in real
 browsers.
 
-### Installation
+## Installation
 
 ```sh
 # npm
@@ -29,11 +29,9 @@ module.exports = {
 ## Configuring ESLint
 
 ```json
-// .eslintrc.json
 {
   "globals": {
     "page": true,
-    "jestPageTester": true,
   },
 }
 ```
