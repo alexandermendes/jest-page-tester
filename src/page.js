@@ -3,8 +3,6 @@ import { JSDOM } from 'jsdom';
 import { loadScripts } from './scripts';
 import { getConfig } from './config';
 
-const CURRENT_URL_ATTRIBUTE = 'data-jest-page-tester-url';
-
 /**
  * Get the full URL from a potential relative URL.
  */
@@ -49,11 +47,6 @@ const copyAttributes = (sourceEl, targetEl) => {
     targetEl.setAttribute(attr.nodeName, attr.nodeValue);
   });
 };
-
-/**
- * Get the current URL from the body element of the page.
- */
-export const getCurrentUrl = () => global.document.body.getAttribute(CURRENT_URL_ATTRIBUTE);
 
 export default class Page {
   constructor(jsdom) {
