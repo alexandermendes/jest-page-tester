@@ -1,5 +1,7 @@
 # Jest Page Tester
 
+[![npm version](https://badge.fury.io/js/jest-page-tester.svg)](https://badge.fury.io/js/jest-page-tester)
+
 Extends [Jest](https://github.com/facebook/jest) with functionality for loading
 real pages into [jsdom](https://github.com/jsdom/jsdom).
 
