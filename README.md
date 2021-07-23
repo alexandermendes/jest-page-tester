@@ -65,14 +65,7 @@ it('runs the external script', async () => {
 
 Jest page tester can be configured by adding a `jest-page-tester.config.js`
 file to the root of your repo, or by adding the `jest-page-tester` property
-to your `package.json` file, for example:
-
-```js
-module.exports = {
-  testURL: 'http://example.release.com',
-  block: ['www.googletagmanager.com'],
-}
-```
+to your `package.json` file.
 
 The available options are documented below.
 
@@ -80,9 +73,28 @@ The available options are documented below.
 
 The base URL against which to run the tests (will be overwritten by the `--testURL` CLI arg).
 
+```js
+// jest-page-tester.config.js
+module.exports = {
+  testURL: 'http://example.com',
+}
+```
+
 ### `block`
 
 A list regular expressions matching URLs to block when loading external resources.
+
+```js
+// jest-page-tester.config.js
+const fetch = require('node-fetch');
+
+module.exports = {
+  block: [
+    'www.googletagmanager.com',
+    'ads.com',
+  ],
+};
+```
 
 ### `fetch`
 
@@ -90,6 +102,7 @@ Override the default fetch function used for requesting resources. Useful if
 we want to purge an edge cache each time we load a page, for example.
 
 ```js
+// jest-page-tester.config.js
 const fetch = require('node-fetch');
 
 module.exports = {
