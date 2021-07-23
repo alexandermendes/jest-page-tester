@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { argv } from 'yargs';
 import { Script } from 'vm';
+import PQueue from 'p-queue';
 import { logger } from './log';
 import { getConfig } from './config';
 
@@ -83,7 +84,39 @@ const loadScript = async (jsdom, scriptEl) => {
   const script = new Script(code);
   const vmContext = jsdom.getInternalVMContext();
 
-  script.runInContext(vmContext);
+  try {
+    script.runInContext(vmContext, { displayErrors: false });
+  } catch (err) {
+    logger.error(`Error loading ${scriptEl.src}: ${err.message}`);
+  }
+};
+
+/**
+ * Check if a script element is asynchronous.
+ *
+ * TODO: test with async=""
+ */
+const isScriptAsync = (scriptEl) => scriptEl.getAttribute('async') != null;
+
+/**
+ * Run synchronous scripts.
+ */
+const runSyncScripts = (jsdom, scriptEls) => {
+  const syncScripts = scriptEls.filter((scriptEl) => !isScriptAsync(scriptEl));
+  const queue = new PQueue({ concurrency: 1 });
+
+  return Promise.all(syncScripts.map(async (scriptEl) => (
+    queue.add(async () => loadScript(jsdom, scriptEl))
+  )));
+};
+
+/**
+ * Run asynchronous scripts.
+ */
+const runAsyncScripts = (jsdom, scriptEls) => {
+  const asyncScripts = scriptEls.filter(isScriptAsync);
+
+  return Promise.all(asyncScripts.map(async (scriptEl) => loadScript(jsdom, scriptEl)));
 };
 
 /**
@@ -106,7 +139,8 @@ export const loadScripts = async (jsdom) => {
       });
   }
 
-  await Promise.all(scriptsBeforeLoad.map((scriptEl) => loadScript(jsdom, scriptEl)));
+  await runSyncScripts(jsdom, scriptsBeforeLoad);
+  await runAsyncScripts(jsdom, scriptsBeforeLoad);
 
   scriptsBeforeLoad.forEach((el) => {
     el.setAttribute(LOADED_ATTRIBUTE, true);
