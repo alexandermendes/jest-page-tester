@@ -1,9 +1,7 @@
 import fetch from 'node-fetch';
-import { argv } from 'yargs';
 import { JSDOM } from 'jsdom';
 import { loadScripts } from './scripts';
-
-const { testURL } = argv;
+import { getConfig } from './config';
 
 const CURRENT_URL_ATTRIBUTE = 'data-jest-page-tester-url';
 
@@ -11,6 +9,7 @@ const CURRENT_URL_ATTRIBUTE = 'data-jest-page-tester-url';
  * Get the full URL from a potential relative URL.
  */
 const getFullUrl = (url) => {
+  const { testURL } = getConfig();
   let href;
 
   try {
@@ -74,14 +73,6 @@ export default class Page {
   }
 
   async loadScripts() {
-    await loadScripts(this.jsdom, {
-      block: [
-        // TODO: Make optional
-        'www.googletagmanager.com',
-        'www.datadoghq-browser-agent.com',
-        'cdn.speedcurve.com',
-        'use.typekit.net',
-      ],
-    });
+    await loadScripts(this.jsdom);
   }
 }

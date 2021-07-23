@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.1",
+    "cosmiconfig": "^7.0.0",
     "figures": "^4.0.0",
     "jest-matchmedia-mock": "^1.1.0",
     "jsdom": "^16.6.0",

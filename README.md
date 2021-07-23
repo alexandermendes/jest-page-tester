@@ -19,6 +19,8 @@ yarn add jest-page-tester -D
 
 ## Setup
 
+Load the preset by adding it to your Jest config, as follows:
+
 ```js
 // jest.config.js
 module.exports = {
@@ -26,17 +28,16 @@ module.exports = {
 }
 ```
 
-## Configuring ESLint
+## Usage
 
-```json
-{
-  "globals": {
-    "page": true,
-  },
-}
+Once you have written some tests (see below) you can run them while passing the
+`testURL` argument:
+
+```
+jest --testURL=https://example.com
 ```
 
-## API
+The following functions will be made available via the `page` global object.
 
 ### `page.loadPage()`
 
@@ -52,18 +53,6 @@ it('renders the page title', async () => {
 });
 ```
 
-The `loadPage()` function returns an object containing `status`...
-
-```js
-it('returns the 404 page', async () => {
-  const { status } = await page.loadPage('/my/page');
-  const title = document.querySelector('h1');
-
-  expect(status).toBe(404);
-  expect(title).toBe('Not Found');
-});
-```
-
 ### `page.loadScripts()`
 
 By default, external script resources will not be loaded. They can be loaded
@@ -76,6 +65,41 @@ it('runs the external script', async () => {
 
   // ...
 });
+```
+
+## Configuration
+
+Jest page tester can be configured by adding a `jest-page-tester.config.js`
+file to the root of your repo, or by adding the `jest-page-tester` property
+to your `package.json` file, for example:
+
+```js
+module.exports = {
+  testURL: 'http://example.release.com',
+  block: ['www.googletagmanager.com'],
+}
+```
+
+The available options are documented below.
+
+### `testURL`
+
+The base URL against which to run the tests (will be overwritten by the `--testURL` CLI arg).
+
+### `block`
+
+A list regular expressions matching URLs to block when loading external resources.
+
+## ESLint
+
+Configure ESLint by adding the `page` global, as follows:
+
+```json
+{
+  "globals": {
+    "page": true,
+  },
+}
 ```
 
 ---

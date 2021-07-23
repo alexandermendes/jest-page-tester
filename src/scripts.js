@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import { argv } from 'yargs';
 import { Script } from 'vm';
 import { logger } from './log';
+import { getConfig } from './config';
 
 const LOADED_ATTRIBUTE = 'data-jest-page-tester-loaded';
 
@@ -39,11 +40,9 @@ const loadScriptSrc = async (scriptEl) => {
 /**
  * Get all script elements within the document.
  */
-const getScripts = (jsdom, {
-  block = [],
-  inline = true,
-}) => [...jsdom.window.document.querySelectorAll('script')]
+const getScripts = (jsdom) => [...jsdom.window.document.querySelectorAll('script')]
   .filter((el) => {
+    const { block = [] } = getConfig();
     const type = el.getAttribute('type');
     const { src } = el;
 
@@ -57,8 +56,9 @@ const getScripts = (jsdom, {
       return false;
     }
 
-    // Filter out any inline scripts if not enabled.
-    if (!src && !inline) {
+    // Filter out any inline scripts if not enabled. These will be loaded
+    // anyway by jsdom.
+    if (!src) {
       return false;
     }
 
@@ -68,8 +68,8 @@ const getScripts = (jsdom, {
 /**
  * Get scripts that have not already been loaded.
  */
-const getNewScripts = (jsdom, scriptOpts) => {
-  const allScripts = getScripts(jsdom, scriptOpts);
+const getNewScripts = (jsdom) => {
+  const allScripts = getScripts(jsdom);
   const newScripts = allScripts.filter((el) => !el.getAttribute(LOADED_ATTRIBUTE));
 
   return newScripts;
@@ -95,8 +95,8 @@ const loadScript = async (jsdom, scriptEl) => {
  * source in the current VM context, with some additional functionality for
  * blocking certain scripts etc.
  */
-export const loadScripts = async (jsdom, scriptOpts) => {
-  const scriptsBeforeLoad = getNewScripts(jsdom, scriptOpts);
+export const loadScripts = async (jsdom) => {
+  const scriptsBeforeLoad = getNewScripts(jsdom);
 
   if (argv.debug) {
     scriptsBeforeLoad
@@ -112,10 +112,10 @@ export const loadScripts = async (jsdom, scriptOpts) => {
     el.setAttribute(LOADED_ATTRIBUTE, true);
   });
 
-  const scriptsAfterLoad = getNewScripts(jsdom, scriptOpts);
+  const scriptsAfterLoad = getNewScripts(jsdom);
 
   // If the loaded scripts injected more scripts run again to load those.
   if (scriptsBeforeLoad.length > scriptsAfterLoad.length) {
-    await loadScripts(jsdom, scriptOpts);
+    await loadScripts(jsdom);
   }
 };

@@ -1,4 +1,5 @@
 /* eslint-disable global-require,import/no-unresolved */
+import { getConfig } from './config';
 import Page from './page';
 
 let JSDOMEnvironment;
@@ -12,7 +13,12 @@ try {
 
 export default class JestPageTesterEnvironment extends JSDOMEnvironment {
   constructor(config, options) {
-    super(config, options);
+    const { testURL } = getConfig();
+
+    super({
+      ...config,
+      testURL,
+    }, options);
 
     this.global.page = new Page(this.dom);
   }
