@@ -64,6 +64,20 @@ it('returns the 404 page', async () => {
 });
 ```
 
+### `page.loadScripts()`
+
+By default, external script resources will not be loaded. They can be loaded
+in a particular test by calling `loadScripts()`, for example:
+
+```js
+it('runs the external script', async () => {
+  await page.loadPage('/my/page');
+  await page.loadScripts();
+
+  // ...
+});
+```
+
 ---
 
 Ideas:
