@@ -1,12 +1,12 @@
 import { JSDOM } from 'jsdom';
-import fetch from 'node-fetch';
 import PQueue from 'p-queue';
+import fetch from '../../src/fetch';
 import { getConfig } from '../../src/config';
 import { loadScripts } from '../../src/scripts';
 import { logger } from '../../src/log';
 
-jest.mock('node-fetch');
 jest.mock('p-queue');
+jest.mock('../../src/fetch');
 jest.mock('../../src/config');
 
 const originalError = logger.error;
