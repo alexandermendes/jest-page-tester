@@ -1,37 +1,32 @@
 import chalk from 'chalk';
 import figures from 'figures';
 
-const ERROR = 'error';
-const WARN = 'warn';
-const INFO = 'info';
-const SUCCESS = 'success';
-const DEBUG = 'debug';
-const LOG = 'log';
+const LEVELS = [
+  'error',
+  'warn',
+  'info',
+  'success',
+  'log',
+  'debug',
+];
 
 const ICONS = {
-  [ERROR]: figures('✗'),
-  [WARN]: figures('⚠'),
-  [INFO]: figures('ℹ'),
-  [SUCCESS]: figures('✔'),
-  [DEBUG]: figures('›'),
+  error: figures('✗'),
+  warn: figures('⚠'),
+  info: figures('ℹ'),
+  success: figures('✔'),
+  debug: figures('›'),
 };
 
 const COLORS = {
-  [ERROR]: 'red',
-  [WARN]: 'yellow',
-  [INFO]: 'cyan',
-  [SUCCESS]: 'green',
-  [DEBUG]: 'white',
+  error: 'red',
+  warn: 'yellow',
+  info: 'cyan',
+  success: 'green',
+  debug: 'white',
 };
 
-export const logger = [
-  ERROR,
-  WARN,
-  INFO,
-  SUCCESS,
-  DEBUG,
-  LOG,
-].reduce((acc, level) => ({
+export const logger = LEVELS.reduce((acc, level) => ({
   ...acc,
   [level]: (...args) => {
     const icon = ICONS[level] || '';
