@@ -27,8 +27,10 @@ const fetchScript = async (src) => {
 /**
  * Get all script elements within the document.
  */
-const getScripts = (jsdom) => [...jsdom.window.document.querySelectorAll('script')]
-  .filter((el) => {
+const getScripts = (jsdom) => {
+  const scriptEls = [...(jsdom.window.document?.querySelectorAll('script') || [])];
+
+  return scriptEls.filter((el) => {
     const { block = [] } = getConfig();
     const type = el.getAttribute('type');
     const { src } = el;
@@ -51,6 +53,7 @@ const getScripts = (jsdom) => [...jsdom.window.document.querySelectorAll('script
 
     return true;
   });
+};
 
 /**
  * Get scripts that have not already been loaded.

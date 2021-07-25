@@ -230,4 +230,24 @@ describe('Scripts', () => {
       );
     });
   });
+
+  describe('clean up', () => {
+    it('does not throw if document has been cleaned up', async () => {
+      const jsdom = {
+        window: {
+          document: null,
+        },
+      };
+
+      let err;
+
+      try {
+        await loadScripts(jsdom);
+      } catch (e) {
+        err = e;
+      }
+
+      expect(err).toBeUndefined();
+    });
+  });
 });
