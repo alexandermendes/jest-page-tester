@@ -27,15 +27,6 @@ const getFullUrl = (url) => {
 };
 
 /**
- * Copy attributes from one DOM element to another.
- */
-const copyAttributes = (sourceEl, targetEl) => {
-  [...sourceEl.attributes].forEach((attr) => {
-    targetEl.setAttribute(attr.nodeName, attr.nodeValue);
-  });
-};
-
-/**
  * Load a page into jsdom.
  */
 export const loadPage = async (jsdom, url) => {
@@ -47,8 +38,6 @@ export const loadPage = async (jsdom, url) => {
 
   jsdom.reconfigure({ url: fullUrl });
 
-  jsdom.window.document.head.innerHTML = dom.window.document.head.innerHTML;
-  jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
-
-  copyAttributes(dom.window.document.body, jsdom.window.document.body);
+  jsdom.window.document.head.outerHTML = dom.window.document.head.outerHTML;
+  jsdom.window.document.body.outerHTML = dom.window.document.body.outerHTML;
 };
