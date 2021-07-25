@@ -19,6 +19,7 @@ export default class JestPageTesterEnvironment extends JSDOMEnvironment {
 
   teardown() {
     this.global.page = null;
+    this.dom.window.close();
 
     return super.teardown();
   }
