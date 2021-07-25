@@ -3,10 +3,13 @@ import fetch from 'node-fetch';
 import PQueue from 'p-queue';
 import { getConfig } from '../../src/config';
 import { loadScripts } from '../../src/scripts';
+import { logger } from '../../src/log';
 
 jest.mock('node-fetch');
 jest.mock('p-queue');
 jest.mock('../../src/config');
+
+const originalError = logger.error;
 
 describe('Scripts', () => {
   beforeEach(() => {
@@ -16,6 +19,10 @@ describe('Scripts', () => {
     PQueue.mockImplementation(() => ({
       add: async (cb) => cb(),
     }));
+  });
+
+  afterEach(() => {
+    logger.error = originalError;
   });
 
   it.each([
@@ -172,5 +179,55 @@ describe('Scripts', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(fetch.mock.calls[0][0]).toBe('http://example.com/2.js');
     expect(fetch.mock.calls[1][0]).toBe('http://example.com/1.js');
+  });
+
+  describe('errors', () => {
+    it('logs errors when running scripts', async () => {
+      logger.error = jest.fn();
+
+      fetch.mockReturnValueOnce({
+        text: () => `
+          throw new Error('bad thing');
+        `,
+      });
+
+      const jsdom = new JSDOM(`
+        <script src="http://example.com/script.js"></script>
+      `, {
+        runScripts: 'dangerously',
+      });
+
+      await loadScripts(jsdom);
+
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error running http://example.com/script.js: bad thing',
+      );
+    });
+
+    it('logs errors when running aync scripts', async () => {
+      logger.error = jest.fn();
+
+      fetch.mockReturnValueOnce({
+        text: () => `
+          (async () => {
+            throw new Error('bad thing');
+          })();
+        `,
+      });
+
+      const jsdom = new JSDOM(`
+        <script src="http://example.com/script.js"></script>
+      `, {
+        runScripts: 'dangerously',
+      });
+
+      await loadScripts(jsdom);
+
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledWith(
+        'Error running http://example.com/script.js: bad thing',
+      );
+    });
   });
 });

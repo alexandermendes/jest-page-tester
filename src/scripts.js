@@ -71,9 +71,9 @@ const loadScript = async (jsdom, scriptEl) => {
   const vmContext = jsdom.getInternalVMContext();
 
   try {
-    script.runInContext(vmContext, { displayErrors: false });
+    await script.runInContext(vmContext);
   } catch (err) {
-    logger.error(`Error loading ${scriptEl.src}: ${err.message}`);
+    logger.error(`Error running ${scriptEl.src}: ${err.message}`);
   }
 };
 
