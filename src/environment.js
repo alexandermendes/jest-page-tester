@@ -1,4 +1,5 @@
 /* eslint-disable import/no-unresolved,global-require */
+import { intercept } from './log';
 import { getPageContext } from './page-context';
 
 let JSDOMEnvironment;
@@ -15,6 +16,12 @@ export default class JestPageTesterEnvironment extends JSDOMEnvironment {
     super(config, options);
 
     this.global.page = getPageContext(this.dom);
+  }
+
+  setup() {
+    intercept(this.dom);
+
+    return super.setup();
   }
 
   teardown() {

@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import figures from 'figures';
+import { getConfig } from './config';
 
 const LEVELS = [
   'error',
@@ -26,6 +27,9 @@ const COLORS = {
   debug: 'white',
 };
 
+/**
+ * A basic custom logger that prettifies log messages.
+ */
 export const logger = LEVELS.reduce((acc, level) => ({
   ...acc,
   [level]: (...args) => {
@@ -41,3 +45,31 @@ export const logger = LEVELS.reduce((acc, level) => ({
     log(formattedMsg, ...additional);
   },
 }), {});
+
+/**
+ * Intercept and silence certain log messages.
+ */
+export const intercept = (jsdom) => {
+  const originalConsole = jsdom.window.console;
+  const { externalLogLevel } = getConfig();
+
+  LEVELS.forEach((level) => {
+    const originalLogFunc = originalConsole[level];
+
+    originalConsole[level] = (...args) => {
+      const { stack } = new Error();
+
+      if (
+        stack.includes('evalmachine')
+        && (
+          !externalLogLevel
+          || LEVELS.indexOf(level) > LEVELS.indexOf(externalLogLevel)
+        )
+      ) {
+        return;
+      }
+
+      originalLogFunc(...args);
+    };
+  });
+};

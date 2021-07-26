@@ -114,6 +114,18 @@ module.exports = {
 };
 ```
 
+### `externalLogLevel`
+
+The level of messages to log when evaluating external resources (e.g. scripts).
+The default is to log no messages.
+
+```js
+// jest-page-tester.config.js
+module.exports = {
+  externalLogLevel: 'error',
+};
+```
+
 ## ESLint
 
 Configure ESLint by adding the `page` global, as follows:
