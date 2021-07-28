@@ -72,6 +72,8 @@ describe('Page', () => {
   });
 
   it('copies any body attributes', async () => {
+    const html = '<body data-foo="bar">Hello</body>';
+
     fetch.mockReturnValueOnce({
       text: () => '<html><body data-foo="bar">Hello</body></html>',
     });
@@ -80,8 +82,20 @@ describe('Page', () => {
 
     await loadPage(jsdom, 'http://example.com/page');
 
-    expect(jsdom.window.document.body.outerHTML).toBe(
-      '<body data-foo="bar">Hello</body>',
-    );
+    expect(jsdom.window.document.body.outerHTML).toBe(html);
+  });
+
+  it('copies any html attributes', async () => {
+    const html = '<html data-foo="bar"><head></head><body>Hello</body></html>';
+
+    fetch.mockReturnValueOnce({
+      text: () => html,
+    });
+
+    const jsdom = new JSDOM();
+
+    await loadPage(jsdom, 'http://example.com/page');
+
+    expect(jsdom.window.document.documentElement.outerHTML).toBe(html);
   });
 });
