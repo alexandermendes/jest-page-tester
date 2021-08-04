@@ -1,15 +1,37 @@
+import nock from 'nock';
 import { JSDOM } from 'jsdom';
-import fetch from '../../src/fetch';
 import { getConfig } from '../../src/config';
 import { loadPage } from '../../src/page';
 
-jest.mock('../../src/fetch');
 jest.mock('../../src/config');
+
+const basicPageHtml = `
+  <html
+    data-example="html"
+  >
+    <head
+      data-example="head"
+    >
+      <script>console.log("hello");</script>
+    </head>
+    <body
+      data-example="body"
+    >
+      Hello
+    </body>
+  </html>
+`;
+
+nock('http://example.com')
+  .persist()
+  .get('/page')
+  .reply(200, basicPageHtml, {
+    'content-type': 'text/html',
+  });
 
 describe('Page', () => {
   beforeEach(() => {
     getConfig.mockReturnValue({});
-    fetch.mockReturnValue({ text: () => '' });
   });
 
   it('reconfigures the current URL from an absolute URL', async () => {
@@ -45,57 +67,14 @@ describe('Page', () => {
     );
   });
 
-  it('copies the contents of the head', async () => {
-    fetch.mockReturnValueOnce({
-      text: () => '<html><head><script>console.log("hello");</script></head></html>',
-    });
-
+  it('copies all key HTML elements', async () => {
     const jsdom = new JSDOM();
 
     await loadPage(jsdom, 'http://example.com/page');
 
-    expect(jsdom.window.document.head.innerHTML).toBe(
-      '<script>console.log("hello");</script>',
-    );
-  });
+    const actual = jsdom.window.document.documentElement.outerHTML.replace(/\s/g, '');
+    const expected = basicPageHtml.replace(/\s/g, '');
 
-  it('copies the contents of the body', async () => {
-    fetch.mockReturnValueOnce({
-      text: () => '<html><body>Hello</body></html>',
-    });
-
-    const jsdom = new JSDOM();
-
-    await loadPage(jsdom, 'http://example.com/page');
-
-    expect(jsdom.window.document.body.innerHTML).toBe('Hello');
-  });
-
-  it('copies any body attributes', async () => {
-    const html = '<body data-foo="bar">Hello</body>';
-
-    fetch.mockReturnValueOnce({
-      text: () => '<html><body data-foo="bar">Hello</body></html>',
-    });
-
-    const jsdom = new JSDOM();
-
-    await loadPage(jsdom, 'http://example.com/page');
-
-    expect(jsdom.window.document.body.outerHTML).toBe(html);
-  });
-
-  it('copies any html attributes', async () => {
-    const html = '<html data-foo="bar"><head></head><body>Hello</body></html>';
-
-    fetch.mockReturnValueOnce({
-      text: () => html,
-    });
-
-    const jsdom = new JSDOM();
-
-    await loadPage(jsdom, 'http://example.com/page');
-
-    expect(jsdom.window.document.documentElement.outerHTML).toBe(html);
+    expect(actual).toBe(expected);
   });
 });

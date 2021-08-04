@@ -51,5 +51,6 @@ export const loadPage = async (jsdom, url) => {
   jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
 
   copyAttributes(dom.window.document.body, jsdom.window.document.body);
+  copyAttributes(dom.window.document.head, jsdom.window.document.head);
   copyAttributes(dom.window.document.documentElement, jsdom.window.document.documentElement);
 };
