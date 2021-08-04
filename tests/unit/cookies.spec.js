@@ -30,6 +30,10 @@ nock('http://example.com')
   });
 
 describe('Cookies', () => {
+  afterAll(() => {
+    nock.restore();
+  });
+
   it('sends cookies with the request', async () => {
     const jsdom = new JSDOM();
 

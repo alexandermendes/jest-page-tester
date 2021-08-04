@@ -37,6 +37,10 @@ describe('Page', () => {
     getConfig.mockReturnValue({});
   });
 
+  afterAll(() => {
+    nock.restore();
+  });
+
   it('reconfigures the current URL from an absolute URL', async () => {
     const jsdom = new JSDOM();
     jsdom.reconfigure = jest.fn();
