@@ -26,10 +26,11 @@ const basicPageHtml = `
 
 nock('http://example.com')
   .persist()
+  .defaultReplyHeaders({
+    'Content-Type': 'text/html',
+  })
   .get('/page')
-  .reply(200, basicPageHtml, {
-    'content-type': 'text/html',
-  });
+  .reply(200, basicPageHtml);
 
 describe('Page', () => {
   beforeEach(() => {

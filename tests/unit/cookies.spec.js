@@ -6,6 +6,9 @@ nock.disableNetConnect();
 
 nock('http://example.com')
   .persist()
+  .defaultReplyHeaders({
+    'Content-Type': 'text/html',
+  })
   .get('/with-cookies')
   .reply(200, function respond() {
     return `
@@ -16,8 +19,14 @@ nock('http://example.com')
         </body>
       </html>
     `;
-  }, {
-    'content-type': 'text/html',
+  })
+  .get('/set-one-cookie')
+  .reply(200, '', {
+    'Set-Cookie': 'responseCookieA=hello',
+  })
+  .get('/set-two-cookies')
+  .reply(200, '', {
+    'Set-Cookie': ['responseCookieA=hello', 'responseCookieB=goodbye'],
   });
 
 describe('Cookies', () => {
@@ -33,5 +42,23 @@ describe('Cookies', () => {
     const expected = 'cookieA=valueA;cookieB=valueB';
 
     expect(actual).toBe(expected);
+  });
+
+  it('sets a single cookies from the response', async () => {
+    const jsdom = new JSDOM();
+
+    await loadPage(jsdom, 'http://example.com/set-one-cookie');
+
+    expect(jsdom.window.document.cookie).toBe('responseCookieA=hello');
+  });
+
+  it('sets multiple cookies from the response', async () => {
+    const jsdom = new JSDOM();
+
+    await loadPage(jsdom, 'http://example.com/set-two-cookies');
+
+    expect(jsdom.window.document.cookie).toBe(
+      'responseCookieA=hello; responseCookieB=goodbye',
+    );
   });
 });

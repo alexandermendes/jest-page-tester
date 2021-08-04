@@ -143,6 +143,9 @@ it('sends cookies with the page request', () => {
 });
 ```
 
+Similarly, if the response received when loading a page includes any
+`Set-Cookie` headers these will be loaded into the local DOM.
+
 ## ESLint
 
 Configure ESLint by adding the `page` global, as follows:

@@ -36,6 +36,22 @@ const copyAttributes = (sourceEl, targetEl) => {
 };
 
 /**
+ * Pass response cookies to the local dom.
+ */
+const setCookies = (res, jsdom, fullUrl) => {
+  const cookies = res.headers.get('set-cookie')?.split(',');
+  const { origin } = new URL(fullUrl);
+
+  if (!cookies) {
+    return;
+  }
+
+  cookies.forEach((cookie) => {
+    jsdom.cookieJar.setCookieSync(cookie, origin);
+  });
+};
+
+/**
  * Load a page into jsdom.
  */
 export const loadPage = async (jsdom, url) => {
@@ -48,15 +64,15 @@ export const loadPage = async (jsdom, url) => {
   });
 
   const text = await res.text();
-
   const dom = new JSDOM(text, { url: fullUrl });
 
   jsdom.reconfigure({ url: fullUrl });
-
   jsdom.window.document.head.innerHTML = dom.window.document.head.innerHTML;
   jsdom.window.document.body.innerHTML = dom.window.document.body.innerHTML;
 
   copyAttributes(dom.window.document.body, jsdom.window.document.body);
   copyAttributes(dom.window.document.head, jsdom.window.document.head);
   copyAttributes(dom.window.document.documentElement, jsdom.window.document.documentElement);
+
+  setCookies(res, jsdom, fullUrl);
 };
