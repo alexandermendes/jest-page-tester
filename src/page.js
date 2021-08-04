@@ -40,7 +40,13 @@ const copyAttributes = (sourceEl, targetEl) => {
  */
 export const loadPage = async (jsdom, url) => {
   const fullUrl = getFullUrl(url);
-  const res = await fetch(fullUrl);
+  const res = await fetch(fullUrl, {
+    credentials: 'include',
+    headers: {
+      cookie: jsdom.window.document.cookie,
+    },
+  });
+
   const text = await res.text();
 
   const dom = new JSDOM(text, { url: fullUrl });

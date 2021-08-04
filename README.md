@@ -126,6 +126,23 @@ module.exports = {
 };
 ```
 
+## Cookies
+
+Any cookies present in the document will be sent along with the request to load
+the page, for example:
+
+```js
+it('sends cookies with the page request', () => {
+  document.cookie = 'token=abc123;';
+
+  await page.loadPage('/page');
+
+  const signInThingy = document.querySelector('#signed-in');
+
+  expect(signInThingy.textContent).toBe('Signed in cookie existed');
+});
+```
+
 ## ESLint
 
 Configure ESLint by adding the `page` global, as follows:

@@ -5,6 +5,8 @@ import { loadPage } from '../../src/page';
 
 jest.mock('../../src/config');
 
+nock.disableNetConnect();
+
 const basicPageHtml = `
   <html
     data-example="html"
